@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Trained model
+# Trained model and data
 bert_model/
+data/
