@@ -15,15 +15,17 @@ def clustering(opt):
     bert_config = BertConfig.from_json_file(
         "{}/config.json".format(opt.model_path)
     )
-    bert_config.output_hidden_states = True # 
     bert_tokenizer = BertTokenizer(
         "{}/vocab.txt".format(opt.model_path),
         do_lower_case=False,
         do_basic_tokenize=False
     )
     device = torch.device("cuda" if torch.cuda.is_available else "cpu")
-    bert_model = BertModel.from_pretrained("{}/pytorch_model.bin".format(opt.model_path), config=bert_config)
-    #bert_model = BertForSequenceClassification.from_pretrained("{}/pytorch_model.bin".format(opt.model_path), config=bert_config)
+    if opt.use_classifier:
+        bert_config.num_labels = opt.num_cls
+        bert_model = BertForSequenceClassification.from_pretrained("{}/pytorch_model.bin".format(opt.model_path), config=bert_config)
+    else:
+        bert_model = BertModel.from_pretrained("{}/pytorch_model.bin".format(opt.model_path), config=bert_config)
     bert_model.to(device)
     
     # load data
@@ -39,8 +41,7 @@ def clustering(opt):
     documents = [ bert_tokenizer.tokenize(document) for document in documents ]
     
     # make words list <= 512 = ([CLS] + 510 + [SEP])
-    #documents = [ document[:510] for document in documents ]
-    documents = [ document[:126] for document in documents ]
+    documents = [ document[:bert_config.max_position_embeddings-2] for document in documents ]
     
     print("[INFO] Make representation from document using BERT model")
     vectors = []
@@ -54,11 +55,9 @@ def clustering(opt):
         
         # input model
         output = bert_model(ids)
-        vector = output.last_hidden_state[0,0,:]
-        #vector = output.hidden_states[12][0,0,:] # last_hidden_state
-        #vector = output.logits[0] # output from classifier (low acc)
+        vector = output.logits[0] if opt.use_classifier else output.last_hidden_state[0,0,:]
         vectors.append(vector.tolist())
-        
+    
     # vectors (document_num, hidden_size)
     np_vectors = np.array(vectors)
     
@@ -89,6 +88,7 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--cls_type", type=str, choices=["kmeans", "euclidean", "cosine", "manhattan"], default="kmeans")
+    parser.add_argument("--use_classifier", action="store_true")
     parser.add_argument("--model_path", type=str, default=None)
     parser.add_argument("--num_cls", type=int, default=2)
     parser.add_argument("--input_file", type=str, default=None)
