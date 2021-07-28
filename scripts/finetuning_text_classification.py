@@ -46,6 +46,7 @@ def main():
     
     parser = ArgumentParser()
     parser.add_argument("--max_epoch", type=int, default=1)
+    parser.add_argument("--max_seq_length", type=int, default=512)
     parser.add_argument("--class_num", type=int, default=2)
     parser.add_argument("--logging_steps", type=int, default=10)
     parser.add_argument("--eval_steps", type=int, default=100)
@@ -68,7 +69,7 @@ def main():
         valid_sent, valid_cls = load_sentence_and_label(args.valid_sent, args.valid_cls)
     
     tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path)
-    tokenizer.model_max_length = 512
+    tokenizer.model_max_length = args.max_seq_length
     
     train_encodings = tokenizer(train_sent, truncation=True, padding=True)
     train_dataset = MyDataset(train_encodings, train_cls)
