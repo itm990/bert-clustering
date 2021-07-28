@@ -93,9 +93,9 @@ def main():
     parser.add_argument("--num_cls", type=int, default=2)
     parser.add_argument("--input_file", type=str, default=None)
     parser.add_argument("--output_file", type=str, default=None)
-    opt = parser.parse_args()
+    args = parser.parse_args()
     
-    clustering(opt)
+    clustering(args)
     
     
 if __name__ == "__main__":

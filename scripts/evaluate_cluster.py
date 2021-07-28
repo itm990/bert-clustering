@@ -53,9 +53,9 @@ def main():
     parser.add_argument("--gold_path", type=str, default=None)
     parser.add_argument("--pred_path", type=str, default=None)
     parser.add_argument("--output_path", type=str, default=None)
-    opt = parser.parse_args()
+    args = parser.parse_args()
     
-    evaluate(opt)
+    evaluate(args)
     
 
 if __name__ == "__main__":    

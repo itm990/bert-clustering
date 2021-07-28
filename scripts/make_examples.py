@@ -136,35 +136,35 @@ def main():
     parser.add_argument("--data_type", type=str, default="double", choices=["single", "double", "triple"])
     parser.add_argument("--sampling_strategy", type=str, default="random", choices=["random", "hard", "semi-hard"])
     parser.add_argument("--triplet_margin", type=float, default=5.0)
-    opt = parser.parse_args()
+    args = parser.parse_args()
     
     # set seed
-    random.seed(opt.seed)
-    np.random.seed(opt.seed)
-    torch.manual_seed(opt.seed)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
     
     # load data
-    sentence_list, label_list = load_sentence_and_label(opt.load_sent, opt.load_cls)
+    sentence_list, label_list = load_sentence_and_label(args.load_sent, args.load_cls)
     
     # set data type
-    if opt.data_type == "single":
+    if args.data_type == "single":
         make_data = make_single_examples
-    elif opt.data_type == "double":
+    elif args.data_type == "double":
         make_data = make_double_examples
-    elif opt.data_type == "triple":
+    elif args.data_type == "triple":
         make_data = make_triple_examples
     
     # make data
-    if opt.sampling_strategy == "random":
+    if args.sampling_strategy == "random":
         examples = make_data(sentence_list, label_list)
-    elif opt.sampling_strategy == "hard":
+    elif args.sampling_strategy == "hard":
         # compute sentence embeddings
-        model = make_model(opt.model_name_or_path, opt.pooling_strategy)
+        model = make_model(args.model_name_or_path, args.pooling_strategy)
         embed_list = model.encode(sentence_list)
-        examples = make_data(sentence_list, label_list, embed_list=embed_list, margin=opt.triplet_margin)
+        examples = make_data(sentence_list, label_list, embed_list=embed_list, margin=args.triplet_margin)
     
     # save data
-    torch.save(examples, opt.save_file)
+    torch.save(examples, args.save_file)
     
     
 if __name__ == "__main__":

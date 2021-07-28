@@ -80,33 +80,33 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--use_amp", action="store_true")
     
-    opt = parser.parse_args()
+    args = parser.parse_args()
     
-    torch.manual_seed(opt.seed)
-    random.seed(opt.seed)
+    torch.manual_seed(args.seed)
+    random.seed(args.seed)
     
     # model (transformer + pooling)
-    model = make_model(opt.model_name_or_path, opt.pooling_strategy)
+    model = make_model(args.model_name_or_path, args.pooling_strategy)
     
-    train_examples = torch.load(opt.train_examples)
-    valid_examples = torch.load(opt.valid_examples)
+    train_examples = torch.load(args.train_examples)
+    valid_examples = torch.load(args.valid_examples)
     
     # train setting
-    if opt.loss_type == "batch_all_triplet":
+    if args.loss_type == "batch_all_triplet":
         train_loss = losses.BatchAllTripletLoss(model=model)
-    elif opt.loss_type == "batch_hard_soft_margin_triplet":
+    elif args.loss_type == "batch_hard_soft_margin_triplet":
         train_loss = losses.BatchAllTripletLoss(model=model)
-    elif opt.loss_type == "batch_hard_triplet":
+    elif args.loss_type == "batch_hard_triplet":
         train_loss = losses.BatchAllTripletLoss(model=model)
-    elif opt.loss_type == "batch_semi_hard_triplet":
+    elif args.loss_type == "batch_semi_hard_triplet":
         train_loss = losses.BatchAllTripletLoss(model=model)
-    elif opt.loss_type == "cosine_similarity":
+    elif args.loss_type == "cosine_similarity":
         train_loss = losses.CosineSimilarityLoss(model=model)
-    elif opt.loss_type == "triplet":
+    elif args.loss_type == "triplet":
         train_loss = losses.TripletLoss(model=model)
 
     # valid setting
-    if "triplet" in opt.loss_type:
+    if "triplet" in args.loss_type:
         evaluator = evaluation.TripletEvaluator.from_input_examples(valid_examples)
     else:
         evaluator = evaluation.EmbeddingSimilarityEvaluator.from_input_examples(valid_examples)
@@ -114,23 +114,23 @@ def main():
     train_dataloader = DataLoader(
         dataset=train_examples,
         shuffle=True,
-        batch_size=opt.batch_size,
+        batch_size=args.batch_size,
     )
     
     observer = TrainingObserver(
-        limit_steps=opt.limit_steps,
-        output_path=opt.output_path,
+        limit_steps=args.limit_steps,
+        output_path=args.output_path,
     )
     
     model.fit(
         train_objectives=[(train_dataloader, train_loss)],
         evaluator=evaluator,
-        epochs=opt.epochs,
-        warmup_steps=opt.warmup_steps,
-        evaluation_steps=opt.evaluation_steps,
-        output_path=opt.output_path,
+        epochs=args.epochs,
+        warmup_steps=args.warmup_steps,
+        evaluation_steps=args.evaluation_steps,
+        output_path=args.output_path,
         save_best_model=True,
-        use_amp=opt.use_amp,
+        use_amp=args.use_amp,
         callback=observer.check_loss,
     )
     
