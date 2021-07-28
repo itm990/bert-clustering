@@ -39,11 +39,11 @@ def make_single_examples(sentence_list, label_list):
     """
     Making single examples : example([text], label) {sentence and class}
     """
-    print('[INFO] Making single data ... from length {}'.format(len(sentence_list)))
+    print("[INFO] Making single data ... from length {}".format(len(sentence_list)))
     examples = []
     for sent, label in zip(sentence_list, label_list):
         examples.append(InputExample(texts=[sent], label=label))
-    print('[INFO] Finish making single data {}'.format(len(examples)))
+    print("[INFO] Finish making single data {}".format(len(examples)))
     return examples
 
 
@@ -51,7 +51,7 @@ def make_double_examples(sentence_list, label_list, embed_list=None, margin=5.0)
     """
     Making double examples : example([text, text], label) {double sentences and similarity}
     """
-    print('[INFO] Making double data ... from length {}'.format(len(sentence_list)))
+    print("[INFO] Making double data ... from length {}".format(len(sentence_list)))
     examples = []
     negative_data_list = []
     
@@ -65,7 +65,7 @@ def make_double_examples(sentence_list, label_list, embed_list=None, margin=5.0)
                 negative_data_list.append([data_a[0], data_b[0], 0])
         negative_data_list = random.sample(negative_data_list, len(examples))
         
-    # hard ?
+    # hard
     else:
         all_data_list = [ [sent, label, embed] for sent, label, embed in zip(sentence_list, label_list, embed_list) ]
         for data_a, data_b in tqdm(list(combinations(all_data_list, 2)), ascii=True, dynamic_ncols=True):
@@ -79,7 +79,7 @@ def make_double_examples(sentence_list, label_list, embed_list=None, margin=5.0)
     
     for sent_a, sent_b, similarity in negative_data_list:
         examples.append(InputExample(texts=[sent_a, sent_b], label=0.0))
-    print('[INFO] Finish making double data {}'.format(len(examples)))
+    print("[INFO] Finish making double data {}".format(len(examples)))
     
     return examples
 
@@ -97,7 +97,7 @@ def make_triple_examples(sentence_list, label_list, embed_list=None, margin=5.0)
         distance = torch.norm(anc_embed - neg_embed, dim=-1)
         return neg_lst[distance.argmin()]
     
-    print('[INFO] Making triple data ... from length {}'.format(len(sentence_list)))
+    print("[INFO] Making triple data ... from length {}".format(len(sentence_list)))
     examples = []
     label_vary = len(set(label_list))
     label_data_list = [ [] for i in range(label_vary) ]
@@ -119,7 +119,7 @@ def make_triple_examples(sentence_list, label_list, embed_list=None, margin=5.0)
         for data_a, data_p in permutations(tmp_pos_list, 2):
             data_n = sample_from(data_a, tmp_neg_list)
             examples.append(InputExample(texts=[data_a[0], data_p[0], data_n[0]]))
-    print('[INFO] Finish making triple data {}'.format(len(examples)))
+    print("[INFO] Finish making triple data {}".format(len(examples)))
     
     return examples
 
@@ -127,15 +127,15 @@ def make_triple_examples(sentence_list, label_list, embed_list=None, margin=5.0)
 def main():
     
     parser = ArgumentParser()
-    parser.add_argument('--model_name_or_path', type=str, default=None)
-    parser.add_argument('--pooling_strategy', type=str, default='mean', choices=['mean', 'cls', 'max'])
-    parser.add_argument('--load_sent', type=str, nargs='+', default=[None])
-    parser.add_argument('--load_cls',  type=str, nargs='+', default=[None])
-    parser.add_argument('--save_file', type=str, default=None)
-    parser.add_argument('--seed', type=int, default=1)
-    parser.add_argument('--data_type', type=str, default='triple', choices=['single', 'double', 'triple'])
-    parser.add_argument('--sampling_strategy', type=str, default='random', choices=['random', 'hard', 'semi-hard'])
-    parser.add_argument('--triplet_margin', type=float, default=5.0)
+    parser.add_argument("--model_name_or_path", type=str, default=None)
+    parser.add_argument("--pooling_strategy", type=str, default="mean", choices=["mean", "cls", "max"])
+    parser.add_argument("--load_sent", type=str, nargs="+", default=[])
+    parser.add_argument("--load_cls",  type=str, nargs="+", default=[])
+    parser.add_argument("--save_file", type=str, default=None)
+    parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--data_type", type=str, default="double", choices=["single", "double", "triple"])
+    parser.add_argument("--sampling_strategy", type=str, default="random", choices=["random", "hard", "semi-hard"])
+    parser.add_argument("--triplet_margin", type=float, default=5.0)
     opt = parser.parse_args()
     
     # set seed
@@ -147,17 +147,17 @@ def main():
     sentence_list, label_list = load_sentence_and_label(opt.load_sent, opt.load_cls)
     
     # set data type
-    if opt.data_type == 'single':
+    if opt.data_type == "single":
         make_data = make_single_examples
-    elif opt.data_type == 'double':
+    elif opt.data_type == "double":
         make_data = make_double_examples
-    elif opt.data_type == 'triple':
+    elif opt.data_type == "triple":
         make_data = make_triple_examples
     
     # make data
-    if opt.sampling_strategy == 'random':
+    if opt.sampling_strategy == "random":
         examples = make_data(sentence_list, label_list)
-    elif opt.sampling_strategy == 'hard':
+    elif opt.sampling_strategy == "hard":
         # compute sentence embeddings
         model = make_model(opt.model_name_or_path, opt.pooling_strategy)
         embed_list = model.encode(sentence_list)
@@ -167,7 +167,7 @@ def main():
     torch.save(examples, opt.save_file)
     
     
-if __name__ == '__main__':
+if __name__ == "__main__":
     
     main()
 

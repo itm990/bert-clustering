@@ -18,46 +18,46 @@ def purity_score(gold, pred):
 def evaluate(opt):
     
     # prepare gold data
-    print('[INFO] Get gold labels from {}'.format(opt.gold_path))
+    print("[INFO] Get gold labels from {}".format(opt.gold_path))
     gold_list = []
     with open(opt.gold_path) as gold_file:
         for label in gold_file:
             gold_list.append(label.strip())
             
     # prepare predict data
-    print('[INFO] Get predict labels from {}'.format(opt.pred_path))
+    print("[INFO] Get predict labels from {}".format(opt.pred_path))
     pred_list = []
     with open(opt.pred_path) as pred_file:
         for label in pred_file:
             pred_list.append(label.strip())
             
     if len(gold_list) != len(pred_list):
-        print('[Error] Not match number of documents, gold : {}, predict : {}'.format(len(gold_list), len(pred_list)))
+        print("[Error] Not match number of documents, gold : {}, predict : {}".format(len(gold_list), len(pred_list)))
         exit()
     
     # purity
-    print('[INFO] Calculate purity')
+    print("[INFO] Calculate purity")
     gold = np.array(gold_list)
     pred = np.array(pred_list)
     score = purity_score(gold, pred)
-    summary = 'Purity: {}\nInverse Purity: {}\nF-value: {}\n'.format(score[0], score[1], score[2])
+    summary = "Purity: {}\nInverse Purity: {}\nF-value: {}\n".format(score[0], score[1], score[2])
     print(summary)
-    print('[INFO] Save purity score as {}'.format(opt.output_path))
-    with open(opt.output_path, mode='w') as output_file:
+    print("[INFO] Save purity score as {}".format(opt.output_path))
+    with open(opt.output_path, mode="w") as output_file:
         output_file.write(summary)
         
 
 def main():
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gold_path', type=str, default=None)
-    parser.add_argument('--pred_path', type=str, default=None)
-    parser.add_argument('--output_path', type=str, default=None)
+    parser.add_argument("--gold_path", type=str, default=None)
+    parser.add_argument("--pred_path", type=str, default=None)
+    parser.add_argument("--output_path", type=str, default=None)
     opt = parser.parse_args()
     
     evaluate(opt)
     
 
-if __name__ == '__main__':    
+if __name__ == "__main__":    
     main()
 
