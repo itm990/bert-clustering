@@ -3,9 +3,9 @@ from itertools import combinations, permutations
 from operator import itemgetter
 import random
 
-from tqdm import tqdm
-import numpy as np
 import torch
+import numpy as np
+from tqdm import tqdm
 
 from sentence_transformers import InputExample
 

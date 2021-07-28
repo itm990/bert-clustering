@@ -1,10 +1,11 @@
 import argparse
-from tqdm import tqdm
-import torch
-from transformers import BertTokenizer, BertConfig, BertForSequenceClassification, BertModel
-from pyknp import Juman
+
 import numpy as np
+import torch
+from tqdm import tqdm
 from sklearn.cluster import KMeans, AgglomerativeClustering
+
+from transformers import BertTokenizer, BertConfig, BertForSequenceClassification, BertModel
 
 
 def clustering(opt):

@@ -1,18 +1,15 @@
 from argparse import ArgumentParser
 import csv
+from logging import getLogger, DEBUG, FileHandler, Formatter
+import os
 import re
 import random
-import os
-from logging import getLogger, DEBUG, FileHandler, Formatter
-from pyknp import Juman
-from tqdm import tqdm
 
 import torch
+from torch.cuda.amp import autocast, GradScaler
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.cuda.amp import autocast, GradScaler
-from torch.utils.data import TensorDataset, random_split
-from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
+from torch.utils.data import TensorDataset, random_split, DataLoader, RandomSampler, SequentialSampler
 
 import transformers
 from sentence_transformers import SentenceTransformer, models, InputExample, losses, evaluation
