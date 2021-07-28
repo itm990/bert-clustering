@@ -1,3 +1,4 @@
+from transformers import BertConfig
 from sentence_transformers import SentenceTransformer, models
 
 
@@ -7,7 +8,7 @@ def set_pooling(pooling_type):
     return pooling_dict
 
 
-def make_model(model_name_or_path, pooling_strategy, max_seq_length=128):
+def make_model(model_name_or_path, pooling_strategy):
     transformer = models.Transformer(model_name_or_path=model_name_or_path)
     pooling_setting = set_pooling(pooling_strategy)
     pooling = models.Pooling(
@@ -17,5 +18,4 @@ def make_model(model_name_or_path, pooling_strategy, max_seq_length=128):
         pooling_mode_mean_tokens=pooling_setting["mean"],
     )
     model = SentenceTransformer(modules=[transformer, pooling])
-    model.max_seq_length = max_seq_length
     return model

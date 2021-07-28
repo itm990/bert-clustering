@@ -46,7 +46,6 @@ def main():
     
     parser = ArgumentParser()
     parser.add_argument("--max_epoch", type=int, default=1)
-    parser.add_argument("--max_seq_length", type=int, default=512)
     parser.add_argument("--class_num", type=int, default=2)
     parser.add_argument("--logging_steps", type=int, default=10)
     parser.add_argument("--eval_steps", type=int, default=100)
@@ -67,9 +66,12 @@ def main():
     train_sent, train_cls = load_sentence_and_label(args.train_sent, args.train_cls)
     if do_eval:
         valid_sent, valid_cls = load_sentence_and_label(args.valid_sent, args.valid_cls)
+
+    config = BertConfig.from_json_file("{}/config.json".format(args.model_name_or_path))
+    config.num_labels = args.class_num
     
     tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path)
-    tokenizer.model_max_length = args.max_seq_length
+    tokenizer.model_max_length = config.max_position_embeddings
     
     train_encodings = tokenizer(train_sent, truncation=True, padding=True)
     train_dataset = MyDataset(train_encodings, train_cls)
@@ -96,8 +98,6 @@ def main():
         save_steps=args.eval_steps,
     )
     
-    config = BertConfig.from_json_file("{}/config.json".format(args.model_name_or_path))
-    config.num_labels = args.class_num
     model = BertForSequenceClassification(config)
     
     trainer = Trainer(
