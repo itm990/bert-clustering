@@ -49,9 +49,9 @@ def evaluate(opt):
 def main():
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gold_path', type=str, default='../data/1-7_cls.txt')
-    parser.add_argument('--pred_path', type=str, default='../data/1-7_kmeans_pred.txt')
-    parser.add_argument('--output_path', type=str, default='../data/1-7_kmeans_purity.txt')
+    parser.add_argument('--gold_path', type=str, default=None)
+    parser.add_argument('--pred_path', type=str, default=None)
+    parser.add_argument('--output_path', type=str, default=None)
     opt = parser.parse_args()
     
     evaluate(opt)

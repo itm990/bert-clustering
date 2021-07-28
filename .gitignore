@@ -131,3 +131,6 @@ dmypy.json
 # Trained model and data
 bert_model/
 data/
+
+# wandb
+wandb/

@@ -66,9 +66,9 @@ def extract_data(csv_file_list):
 def main():
             
     parser = argparse.ArgumentParser()
-    parser.add_argument('--load_from', type=str, nargs='+', default=['../data/No.1_class_0120.csv'])
-    parser.add_argument('--save_sent_as', type=str, default='../data/1_0120_sent.txt')
-    parser.add_argument('--save_cls_as',  type=str, default='../data/1_0120_cls.txt')
+    parser.add_argument('--load_from', type=str, nargs='+', default=[None])
+    parser.add_argument('--save_sent_as', type=str, default=None)
+    parser.add_argument('--save_cls_as',  type=str, default=None)
     opt = parser.parse_args()
     
     sentences, classes = extract_data(opt.load_from)

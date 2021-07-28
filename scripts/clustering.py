@@ -88,10 +88,10 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--cls_type', type=str, choices=['kmeans', 'euclidean', 'cosine', 'manhattan'], default='kmeans')
-    parser.add_argument('--model_path', type=str, default='../bert_model/Japanese_L-12_H-768_A-12_E-30_BPE_transformers')
+    parser.add_argument('--model_path', type=str, default=None)
     parser.add_argument('--num_cls', type=int, default=2)
-    parser.add_argument('--input_file', type=str, default='../data/1-7_sent.tok')
-    parser.add_argument('--output_file', type=str, default='../data/1-7_kmeans_pred.txt')
+    parser.add_argument('--input_file', type=str, default=None)
+    parser.add_argument('--output_file', type=str, default=None)
     opt = parser.parse_args()
     
     clustering(opt)

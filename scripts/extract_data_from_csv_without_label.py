@@ -96,9 +96,9 @@ def save_to_file(filename, string):
 def main():
             
     parser = argparse.ArgumentParser()
-    parser.add_argument('--load_from', type=str, nargs='+', default=['../data/For_Finetuning.csv'])
-    parser.add_argument('--save_sent_as', type=str, default='../data/for_ft_sent.txt')
-    parser.add_argument('--save_cls_as', type=str, default='../data/for_ft_cls.txt')
+    parser.add_argument('--load_from', type=str, nargs='+', default=[None])
+    parser.add_argument('--save_sent_as', type=str, default=None)
+    parser.add_argument('--save_cls_as', type=str, default=None)
     opt = parser.parse_args()
     
     sentences, classes = extract_data(opt.load_from)

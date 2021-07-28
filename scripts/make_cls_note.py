@@ -34,8 +34,8 @@ def make_cls_note(opt):
 def main():
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_file', type=str, default='../data/cls.txt')
-    parser.add_argument('--output_file', type=str, default='../data/cls.txt')
+    parser.add_argument('--input_file', type=str, default=None)
+    parser.add_argument('--output_file', type=str, default=None)
     opt = parser.parse_args()
     
     make_cls_note(opt)

@@ -1,6 +1,4 @@
-#from sentence_transformers import SentenceTransformer, models
-from sentence_transformers import models
-from SentenceTransformer import SentenceTransformer
+from sentence_transformers import SentenceTransformer, models
 
 
 def set_pooling(pooling_type):
