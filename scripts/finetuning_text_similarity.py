@@ -44,13 +44,15 @@ class TrainingObserver():
         if loss > self.min_loss:
             best = "keep"
             self.steps += 1
-            if self.steps == self.limit_steps:
-                print("early stopping")
         else:
             best = "update"
             self.min_loss = loss
             self.steps = 0
         self.logger.info("epoch: {:2d} steps: {:5d} valid_loss: {:f} best: {:6s} not_improve_cnt: {:d}".format(epoch, steps, loss, best, self.steps))
+        if self.steps == self.limit_steps:
+            print("Early Stopping.")
+            self.logger.info("Early Stopping.")
+            exit()
         
 
 def main():
